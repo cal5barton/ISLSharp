@@ -19,7 +19,7 @@ namespace ISLOnline.ISLPronto
             return String.Format("islpronto/chat/{0}", method);
         }
 
-        public List<Helpers.Chat> GetList(string domain, bool activeOnly = false, DateTime? createTimeBefore = null, DateTime? createTimeAfter = null, string fromRecordId = "", int? limit = null, string supporter = "")
+        public List<Helpers.Chat> GetList(string domain, bool activeOnly = false, DateTime? createTimeBefore = null, DateTime? createTimeAfter = null, int? fromRecordNum = null, int? limit = null, string supporter = "")
         {
             Dictionary<string, string> args = new Dictionary<string,string>();
 
@@ -27,7 +27,7 @@ namespace ISLOnline.ISLPronto
             if (activeOnly) args.Add("active", "true");
             if (!activeOnly && createTimeBefore != null) args.Add("created_time_before", createTimeBefore.Value.ToString("yyyy-MM-dd HH:mm:ss"));
             if (!activeOnly && createTimeAfter != null) args.Add("created_time_after", createTimeAfter.Value.ToString("yyyy-MM-dd HH:mm:ss"));
-            if (fromRecordId != "") args.Add("from", fromRecordId);
+            if (fromRecordNum != null) args.Add("from", fromRecordNum.Value.ToString());
             if (limit != null) args.Add("limit", limit.Value.ToString());
             if (supporter != "") args.Add("supporter", supporter);
 
