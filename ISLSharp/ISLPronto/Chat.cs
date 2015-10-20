@@ -31,10 +31,23 @@ namespace ISLOnline.ISLPronto
             if (limit != null) args.Add("limit", limit.Value.ToString());
             if (supporter != "") args.Add("supporter", supporter);
 
-            var results = Call("get/list/1", "POST", data: DictionaryToJson(args));
-                      
-            return JsonConvert.DeserializeObject<Helpers.ChatList>(results["data"].ToString()).chat.ToList();
-            
+            try
+            {
+                var results = Call("get/list/1", "POST", data: DictionaryToJson(args));
+                return JsonConvert.DeserializeObject<Helpers.ChatList>(results["data"].ToString()).chat.ToList();
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message == "Unsuccessful call to web api. USER_ERROR")
+                {
+                    var results = Call("get/list/tmp", "POST", data: DictionaryToJson(args));
+                    return JsonConvert.DeserializeObject<Helpers.ChatList>(results["data"].ToString()).chat.ToList();
+                }
+                else
+                {
+                    throw ex;
+                }
+            }
         }
 
         public Helpers.Chat GetChatById(string chatId)
@@ -43,9 +56,24 @@ namespace ISLOnline.ISLPronto
 
             args.Add("chat_sid", chatId);
 
-            var results = Call("get/single/1", "POST", data: DictionaryToJson(args));
+            try
+            {
+                var results = Call("get/single/1", "POST", data: DictionaryToJson(args));
+                return JsonConvert.DeserializeObject<Helpers.Chat>(results["data"]["chat"].ToString());
+            }
+            catch(Exception ex)
+            {
+                if (ex.Message == "Unsuccessful call to web api. USER_ERROR")
+                {
+                    var results = Call("get/single/tmp", "POST", data: DictionaryToJson(args));
+                    return JsonConvert.DeserializeObject<Helpers.Chat>(results["data"]["chat"].ToString());
+                }
+                else
+                {
+                    throw ex;
+                }
 
-            return JsonConvert.DeserializeObject<Helpers.Chat>(results["data"]["chat"].ToString());
+            }
             
         }
 
@@ -54,10 +82,24 @@ namespace ISLOnline.ISLPronto
             Dictionary<string, string> args = new Dictionary<string, string>();
 
             args.Add("chat_sid", chatId);
-            
-            var results = Call("content/get/single/1", "POST", data: DictionaryToJson(args));
 
-            return JsonConvert.DeserializeObject<Helpers.ChatContent>(results["data"].ToString());
+            try
+            {
+                var results = Call("content/get/single/1", "POST", data: DictionaryToJson(args));
+                return JsonConvert.DeserializeObject<Helpers.ChatContent>(results["data"].ToString());
+            }
+            catch(Exception ex)
+            {
+                if (ex.Message == "Unsuccessful call to web api. USER_ERROR")
+                {
+                    var results = Call("content/get/single/tmp", "POST", data: DictionaryToJson(args));
+                    return JsonConvert.DeserializeObject<Helpers.ChatContent>(results["data"].ToString());
+                }
+                else
+                {
+                    throw ex;
+                }
+            }
             
         }
     }
